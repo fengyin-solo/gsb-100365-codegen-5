@@ -54,6 +54,17 @@ export function resetRows(key: string): EntryRow[] {
   return rows
 }
 
+// 跨模块的一次「整组落库」：在内存草稿上改全部桶，任一步抛错就丢弃草稿，
+// 缓存与 localStorage 都保持旧值——多处写入要么一起成功，要么一起回退。
+export function commitAll(mutate: (draft: Record<string, EntryRow[]>) => void): void {
+  const draft = clone(allRows())
+  mutate(draft)
+  cache = draft
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(draft))
+  }
+}
+
 export function storageKey(): string {
   return STORAGE_KEY
 }
