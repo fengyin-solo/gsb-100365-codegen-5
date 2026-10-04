@@ -35,3 +35,26 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .error-text { color: #b42318; }
 .status-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
 .legend-item { background: #eef2f7; border-radius: 999px; padding: 2px 10px; }
+.filter-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.multi-filter { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.multi-filter-label { font-size: 12px; color: var(--muted); }
+.check-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; background: #eef2f7; border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.col-check { width: 42px; }
+.row-disabled { opacity: 0.45; }
+.row-void { color: var(--muted); text-decoration: line-through; }
+.tag { display: inline-block; font-size: 11px; border-radius: 4px; padding: 0 6px; margin-left: 4px; }
+.tag-warn { background: #fef3c7; color: #92400e; }
+.batch-console { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px; }
+.console-hint { flex: 1; font-size: 12px; color: var(--muted); }
+.fail-switch { font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.batch-message { font-size: 13px; margin: 0 0 12px; }
+.ok-text { color: #157347; }
+.section-title { font-size: 14px; margin: 18px 0 8px; }
+.batch-detail { margin-top: 14px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.detail-title { margin: 0 0 10px; font-size: 13px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-span { grid-column: 1 / -1; }
+.detail-grid h5 { margin: 0 0 6px; font-size: 13px; color: #334155; }
+.sub-table th, .sub-table td { font-size: 12px; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+a.btn { display: inline-block; text-decoration: none; line-height: 1.5; }

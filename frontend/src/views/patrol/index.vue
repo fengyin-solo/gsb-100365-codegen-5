@@ -67,6 +67,45 @@
       <span>共 {{ total }} 条巡护任务记录</span>
       <span v-if="errorMessage" class="error-text">{{ errorMessage }}</span>
     </footer>
+
+    <h3 class="section-title">巡护路线复查事项（隔离带维护批次联动生成）</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>复查编号</th>
+          <th>巡护区域</th>
+          <th>巡护路线</th>
+          <th>复查内容</th>
+          <th>计划日期</th>
+          <th>复查状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="row in reviewRows" :key="String(row.id)">
+          <td>{{ row['复查编号'] }}</td>
+          <td>{{ row['巡护区域'] }}</td>
+          <td>{{ row['巡护路线'] }}</td>
+          <td>{{ row['复查内容'] }}</td>
+          <td>{{ row['计划日期'] }}</td>
+          <td>{{ row.status }}</td>
+          <td>
+            <button
+              v-if="String(row.status) !== '已复查'"
+              class="link"
+              type="button"
+              @click="finishReview(Number(row.id))"
+            >
+              确认复查
+            </button>
+            <span v-else>—</span>
+          </td>
+        </tr>
+        <tr v-if="!reviewRows.length">
+          <td colspan="7" class="empty-state">暂无复查事项，维护批次落库后按林区路线自动安排</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 </template>
 
@@ -79,6 +118,8 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { REVIEW_KEY, completeReview } from '@/api/maintenance-batch'
+import { listRows } from '@/data/local-store'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('patrol')
@@ -131,6 +172,19 @@ function reload() {
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : '巡护任务列表读取失败'
   }
+  reviewRows.value = listRows(REVIEW_KEY)
+}
+
+const reviewRows = ref<EntryRow[]>([])
+
+function finishReview(id: number) {
+  errorMessage.value = ''
+  const result = completeReview(id)
+  if (!result.ok) {
+    errorMessage.value = result.message
+    return
+  }
+  reload()
 }
 
 onMounted(reload)

@@ -67,6 +67,76 @@
       <span>共 {{ total }} 条防火林带记录</span>
       <span v-if="errorMessage" class="error-text">{{ errorMessage }}</span>
     </footer>
+
+    <h3 class="section-title">防火林带补植清单（维护批次联动生成）</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>清单编号</th>
+          <th>所属林区</th>
+          <th>林带编号</th>
+          <th>林带名称</th>
+          <th>来源隔离带</th>
+          <th>登记日期</th>
+          <th>清单状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="row in replantRows" :key="String(row.id)">
+          <td>{{ row['清单编号'] }}</td>
+          <td>{{ row['所属林区'] }}</td>
+          <td>{{ row['林带编号'] }}</td>
+          <td>{{ row['林带名称'] }}</td>
+          <td>{{ row['来源隔离带'] }}</td>
+          <td>{{ row['登记日期'] }}</td>
+          <td>{{ row.status }}</td>
+        </tr>
+        <tr v-if="!replantRows.length">
+          <td colspan="7" class="empty-state">暂无补植清单，在维护批次台安排整组补植后自动生成</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">防火林带待办 · 补植任务</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>待办编号</th>
+          <th>任务名称</th>
+          <th>所属林区</th>
+          <th>关联清单</th>
+          <th>来源隔离带</th>
+          <th>生成日期</th>
+          <th>待办状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="row in todoRows" :key="String(row.id)">
+          <td>{{ row['待办编号'] }}</td>
+          <td>{{ row['任务名称'] }}</td>
+          <td>{{ row['所属林区'] }}</td>
+          <td>{{ row['关联清单'] }}</td>
+          <td>{{ row['来源隔离带'] }}</td>
+          <td>{{ row['生成日期'] }}</td>
+          <td>{{ row.status }}</td>
+          <td>
+            <button
+              v-if="String(row.status) !== '已完成'"
+              class="link"
+              type="button"
+              @click="finishTodo(Number(row.id))"
+            >
+              完成补植
+            </button>
+            <span v-else>—</span>
+          </td>
+        </tr>
+        <tr v-if="!todoRows.length">
+          <td colspan="8" class="empty-state">暂无林带待办，补植批次落库后跟着生成补植任务</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 </template>
 
@@ -79,6 +149,8 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { FIREBELT_TODO_KEY, REPLANT_KEY, completeFirebeltTodo } from '@/api/maintenance-batch'
+import { listRows } from '@/data/local-store'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('firebelt')
@@ -131,6 +203,21 @@ function reload() {
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : '防火林带列表读取失败'
   }
+  replantRows.value = listRows(REPLANT_KEY)
+  todoRows.value = listRows(FIREBELT_TODO_KEY)
+}
+
+const replantRows = ref<EntryRow[]>([])
+const todoRows = ref<EntryRow[]>([])
+
+function finishTodo(id: number) {
+  errorMessage.value = ''
+  const result = completeFirebeltTodo(id)
+  if (!result.ok) {
+    errorMessage.value = result.message
+    return
+  }
+  reload()
 }
 
 onMounted(reload)

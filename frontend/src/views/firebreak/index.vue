@@ -6,6 +6,7 @@
         <p class="page-desc">维护防火隔离带，围绕隔离带编号、所属林区、起止坐标、带宽米数做登记、筛选与状态流转。</p>
       </div>
       <div class="page-actions">
+        <RouterLink class="btn primary" to="/maintenance-batch">前往维护批次台</RouterLink>
         <button class="btn primary" type="button" @click="openCreate">登记防火隔离带</button>
         <button class="btn" type="button" @click="exportRows">导出防火隔离带清单</button>
       </div>
@@ -82,7 +83,7 @@ import {
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('firebreak')
-const columns = ["隔离带编号", "所属林区", "起止坐标", "带宽米数", "建成日期", "最近维护日期", "植被恢复程度", "维护状态"]
+const columns = ["隔离带编号", "所属林场", "所属林区", "起止坐标", "带宽米数", "建成日期", "最近维护日期", "植被恢复程度", "维护状态"]
 const actions = ["安排维护", "确认恢复", "标记荒废"]
 const statuses = ["正常", "需割草", "需补植", "已荒废"]
 const stats = [{"label": "隔离带总长", "value": 0}, {"label": "需维护条数", "value": 0}, {"label": "荒废条数", "value": 0}]
